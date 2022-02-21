@@ -57,7 +57,7 @@ mp_pose = mp.solutions.pose
 pose = mp_pose.Pose(static_image_mode=True, min_detection_confidence=0.3)
 mp_drawing = mp.solutions.drawing_utils 
 
-mypath=r"C:\Users\aryav\Downloads\ezgif-2-31a32c5bca-jpg"
+mypath=r"C:\Users\aryav\Desktop\Github\Physion\Test_Images_Plank"
 onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath,f))]
 images = np.empty(len(onlyfiles), dtype=object)
 for n in range(0, len(onlyfiles)):
