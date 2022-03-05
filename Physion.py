@@ -1,13 +1,13 @@
 import cv2
 import mediapipe as mp
 import time
-import math
+# import math
 import matplotlib.pyplot as plt
 import numpy as np
-from glob import glob
+# from glob import glob
 from os import listdir
 from os.path import isfile, join
-import time
+# import time
 
 
 anglekneerightarray = []
@@ -63,8 +63,8 @@ images = np.empty(len(onlyfiles), dtype=object)
 for n in range(0, len(onlyfiles)):
     images[n] = cv2.imread( join(mypath,onlyfiles[n]) )
 
+start_time = time.time()
 for img in images:
-    start_time = time.time()
     results = pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     
 
@@ -376,14 +376,10 @@ for img in images:
                     cv2.line(img, (lmList[13][1],lmList[13][2]), (int(left_elbow_calc2), int(left_elbow_calc3)) , (0, 255, 0), 3) 
 #
 
-                    
-            fig = plt.figure(figsize = [10, 10])
+                            
+            # plt.axis('off');plt.imshow(img[:,:,::-1]);plt.show()
         
-            plt.title("Output");plt.axis('off');plt.imshow(img[:,:,::-1]);plt.show()
-        
-            print("My program took", time.time() - start_time, "to run")
-
-
-
 # plt.plot(anglekneeleftarray)
 # plt.plot(anglehipleftarray)
+
+print("My program took", time.time() - start_time, "to run")
