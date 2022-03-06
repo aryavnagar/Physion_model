@@ -60,7 +60,7 @@ def Plank():
         return lmList
     
     mp_pose = mp.solutions.pose
-    pose = mp_pose.Pose(static_image_mode=True, min_detection_confidence=0.3)
+    pose = mp_pose.Pose(static_image_mode=True, min_detection_confidence=0.5)
     mp_drawing = mp.solutions.drawing_utils 
     
     mypath=r"C:\Users\aryav\Desktop\Github\Physion\images"
@@ -393,7 +393,7 @@ def Plank():
     
     
                                 
-                # plt.axis('off');plt.imshow(img[:,:,::-1]);plt.show()
+                plt.axis('off');plt.imshow(img[:,:,::-1]);plt.show()
                 
                 height, width, layers = img.shape
                 size = (width,height)
@@ -403,17 +403,17 @@ def Plank():
                 
     
                 
-    for filename in os.listdir(mypath):
-        file_path = os.path.join(mypath, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+    # for filename in os.listdir(mypath):
+    #     file_path = os.path.join(mypath, filename)
+    #     try:
+    #         if os.path.isfile(file_path) or os.path.islink(file_path):
+    #             os.unlink(file_path)
+    #         elif os.path.isdir(file_path):
+    #             shutil.rmtree(file_path)
+    #     except Exception as e:
+    #         print('Failed to delete %s. Reason: %s' % (file_path, e))
     
-    out = cv2.VideoWriter('PhysionFinalVideo.mp4',cv2.VideoWriter_fourcc(*'DIVX'), 20,size)
+    out = cv2.VideoWriter('PhysionFinalVideo.mp4',cv2.VideoWriter_fourcc(*'DIVX'), 4,size)
      
     for i in range(len(img_array)):
         out.write(img_array[i])
