@@ -1,18 +1,18 @@
 import cv2
 import mediapipe as mp
-import time
-# import math
-import matplotlib.pyplot as plt
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
+mp_pose = mp.solutions.pose
 import numpy as np
-# from glob import glob
 from os import listdir
 from os.path import isfile, join
+import time
+import matplotlib.pyplot as plt
 import os
 import shutil
-import glob
 
 
-def Plank():
+def getPlank():
     size = None
     img_array = []
     
@@ -29,6 +29,24 @@ def Plank():
     angleelbowleftright = []
     
     
+    def findPosition(image, draw=True):
+        
+        lmList = []
+        
+        if results.pose_landmarks:
+            
+            for id, lm in enumerate(results.pose_landmarks.landmark):
+                h, w, c = image.shape
+                # print(id, lm)
+                cx, cy = int(lm.x * w), int(lm.y * h)
+                lmList.append([id, cx, cy])
+                
+                if draw:
+                    cv2.circle(image, (cx, cy), 5, (255, 0, 0), cv2.FILLED)
+                    
+        return lmList
+    
+    
     def calculate_angle(a,b,c):
         a = np.array(a) # First
         b = np.array(b) # Mid
@@ -41,27 +59,10 @@ def Plank():
             angle = 360-angle
             
         return angle
+      
+    pose = mp_pose.Pose(static_image_mode=True, model_complexity=1, enable_segmentation=True, min_detection_confidence=0.5)
+      
     
-    def findPosition(img, draw=True):
-        
-        lmList = []
-        
-        if results.pose_landmarks:
-            
-            for id, lm in enumerate(results.pose_landmarks.landmark):
-                h, w, c = img.shape
-                # print(id, lm)
-                cx, cy = int(lm.x * w), int(lm.y * h)
-                lmList.append([id, cx, cy])
-                
-                if draw:
-                    cv2.circle(img, (cx, cy), 5, (255, 0, 0), cv2.FILLED)
-                    
-        return lmList
-    
-    mp_pose = mp.solutions.pose
-    pose = mp_pose.Pose(static_image_mode=True, min_detection_confidence=0.5)
-    mp_drawing = mp.solutions.drawing_utils 
     
     mypath=r"C:\Users\aryav\Desktop\Github\Physion\images"
     onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath,f))]
@@ -71,6 +72,7 @@ def Plank():
     
     start_time = time.time()
     for img in images:
+        
         results = pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         
     
@@ -393,7 +395,7 @@ def Plank():
     
     
                                 
-                plt.axis('off');plt.imshow(img[:,:,::-1]);plt.show()
+                # plt.axis('off');plt.imshow(img[:,:,::-1]);plt.show()
                 
                 height, width, layers = img.shape
                 size = (width,height)
@@ -403,20 +405,19 @@ def Plank():
                 
     
                 
-    # for filename in os.listdir(mypath):
-    #     file_path = os.path.join(mypath, filename)
-    #     try:
-    #         if os.path.isfile(file_path) or os.path.islink(file_path):
-    #             os.unlink(file_path)
-    #         elif os.path.isdir(file_path):
-    #             shutil.rmtree(file_path)
-    #     except Exception as e:
-    #         print('Failed to delete %s. Reason: %s' % (file_path, e))
+    for filename in os.listdir(mypath):
+        file_path = os.path.join(mypath, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
     
-    out = cv2.VideoWriter('PhysionFinalVideo.mp4',cv2.VideoWriter_fourcc(*'DIVX'), 4,size)
+    out = cv2.VideoWriter('PhysionFinalVideo.mp4',cv2.VideoWriter_fourcc(*'DIVX'), 8,size)
      
     for i in range(len(img_array)):
         out.write(img_array[i])
     out.release()
     
-        
