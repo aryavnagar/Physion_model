@@ -9,9 +9,12 @@ from os import listdir
 from os.path import isfile, join
 import os
 import shutil
-# import time
+import glob
+
 
 def Plank():
+    size = None
+    img_array = []
     
     anglekneerightarray = []
     anglekneeleftarray = []
@@ -100,8 +103,14 @@ def Plank():
             # Check if any landmarks are found.
             if results.pose_landmarks:
                 
-                left_side_distance = ({results.pose_landmarks.landmark[mp_pose.PoseLandmark(23).value].z}) #left elbow
-                right_side_distance = ({results.pose_landmarks.landmark[mp_pose.PoseLandmark(24).value].z}) #right elbow
+                left_side_distance = ({results.pose_landmarks.landmark[mp_pose.PoseLandmark(13).value].z}) #left elbow
+                right_side_distance = ({results.pose_landmarks.landmark[mp_pose.PoseLandmark(14).value].z}) #right elbow
+                
+                left_side_distance = list(left_side_distance)
+                right_side_distance = list(right_side_distance)
+                
+                left_side_distance = left_side_distance[0]
+                right_side_distance = right_side_distance[0]
                 
                 
                 if (right_side_distance < left_side_distance):
@@ -241,7 +250,7 @@ def Plank():
                         cv2.line(img, (lmList[14][1],lmList[14][2]), (int(right_elbow_calc2), int(right_elbow_calc3)) , (0, 0, 255), 3) 
     #
     
-                else:
+                elif (left_side_distance < right_side_distance):
                 
                     left_shoulder_angle = calculate_angle(left_hip, left_shoulder, left_elbow)
                     left_elbow_angle = calculate_angle(left_shoulder, left_elbow, left_wrist)
@@ -379,8 +388,20 @@ def Plank():
                         cv2.line(img, (lmList[13][1],lmList[13][2]), (int(left_elbow_calc2), int(left_elbow_calc3)) , (0, 255, 0), 3) 
     #
     
+                # else:
+                #     print('Error')
+    
+    
                                 
                 # plt.axis('off');plt.imshow(img[:,:,::-1]);plt.show()
+                
+                height, width, layers = img.shape
+                size = (width,height)
+                img_array.append(img)
+             
+    
+                
+    
                 
     for filename in os.listdir(mypath):
         file_path = os.path.join(mypath, filename)
@@ -391,7 +412,11 @@ def Plank():
                 shutil.rmtree(file_path)
         except Exception as e:
             print('Failed to delete %s. Reason: %s' % (file_path, e))
-        
-    # plt.plot(anglekneeleftarray)
-    # plt.plot(anglehipleftarray)
     
+    out = cv2.VideoWriter('PhysionFinalVideo.mp4',cv2.VideoWriter_fourcc(*'DIVX'), 20,size)
+     
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
+    
+        
