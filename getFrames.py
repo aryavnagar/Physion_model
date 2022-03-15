@@ -1,20 +1,22 @@
 import cv2
 
-def Frames(video_path):
-    
-    vidcap = cv2.VideoCapture(video_path)
-    def getFrame(sec):
-        vidcap.set(cv2.CAP_PROP_POS_MSEC,sec*1000)
-        hasFrames,image = vidcap.read()
-        if hasFrames:
-            cv2.imwrite("images/"+f"{count:04d}.jpg", image)     # save frame as JPG file
-        return hasFrames
-    sec = 0
-    frameRate = 0.3 #//it will capture image in each 0.5 second
-    count=1
-    success = getFrame(sec)
-    while success:
-        count = count + 1
-        sec = sec + frameRate
-        sec = round(sec, 2)
-        success = getFrame(sec)
+def get_frames(video_path):
+    cap = cv2.VideoCapture(video_path)
+    i = 0
+    # a variable to set how many frames you want to skip
+    frame_skip = 8
+    # a variable to keep track of the frame to be saved
+    frame_count = 0
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+        if i > frame_skip - 1:
+            frame_count += 1
+            cv2.imwrite("images/"+f"{frame_count:04d}.jpg", frame)
+            i = 0
+            continue
+        i += 1
+
+    cap.release()
+    cv2.destroyAllWindows()

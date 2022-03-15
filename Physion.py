@@ -64,7 +64,7 @@ def getPlank():
       
     
     
-    mypath=r"C:\Users\aryav\Desktop\Github\Physion\images"
+    mypath=r"D:\Github\Physion\images"
     onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath,f))]
     images = np.empty(len(onlyfiles), dtype=object)
     for n in range(0, len(onlyfiles)):
